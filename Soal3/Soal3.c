@@ -122,13 +122,16 @@ int main(int argc, char* argv[]) {
             while(wait(&wait1)>0);
             char status[] = {"Download Success"};
             for (int i=0; i<strlen(status);i++) {
-                status[i]+=5;
-                if (status[i]>"Z"&&status[i]<"a") {
-                    status[i]-=26;
-                }
-                if (status[i]>"z") {
-                    status[i]-=26;
-                }
+                if (status[i]!=32) { 
+                     status[i]+=5;
+                     if (status[i]>90&&status[i]<97) {
+                         status[i]-=26;
+                     }
+                     if (status[i]>122) {
+                         status[i]-=26;
+                     }      
+                 }
+
             }
             FILE *ptr = NULL;
             ptr= fopen("Status.txt","w");
