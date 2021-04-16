@@ -5,8 +5,8 @@ Laporan Penyelesaian Pengerjaan Soal Praktikum SISOP Modul 1 - Kelompok B06
 Anggota  | NRP
 ---------|-------
 Faisal Reza Maulana | 05111940000009
-Arvel Gavrilla R. | 05111940000009
-Bayu Adjie Sidharta | 05111940000009
+Arvel Gavrilla R. | 05111940000040
+Bayu Adjie Sidharta | 05111940000172
 
 ## Link-link
 - [Soal](https://docs.google.com/document/d/121ZqwL7KXiKy3YpQgP6INuYlb4969WOj1GlZ9umO65w/edit)
