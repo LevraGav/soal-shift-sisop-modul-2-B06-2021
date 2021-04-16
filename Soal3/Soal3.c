@@ -11,6 +11,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+int signals;
+
+void orphan(int signum) {
+    signals = 0;
+}
+
 int main(int argc, char* argv[]) {
     int killT;
     if(strcmp(argv[1],"-z")==0){
@@ -19,6 +25,13 @@ int main(int argc, char* argv[]) {
         fputs("#!/bin/bash\nkillall soal3\n rm Killer.sh",ptr2);
         fclose(ptr2);
     }
+    if(strcmp(argv[1],"-x")==0){ 
+        FILE *ptr2 = NULL;
+        ptr2 = fopen("Killer.sh","w");
+        fputs("#!/bin/bash\nkillall -15 soal3\n rm Killer.sh",ptr2);
+        fclose(ptr2);
+        signal(SIGTERM,orphan);
+     }
     while(wait(&killT)>0);
   pid_t pid, sid;        // Variabel untuk menyimpan PID
  
@@ -51,16 +64,8 @@ int main(int argc, char* argv[]) {
   //close(STDIN_FILENO);
   //close(STDOUT_FILENO);
   //close(STDERR_FILENO);
-    while (1) {
-        if(strcmp(argv[1],"-x")==0){ 
-            FILE *ptr2 = NULL;
-            ptr2 = fopen("Killer.sh","w");
-            char kill2[1000];
-            sprintf(kill2,"#!/bin/bash\nkill %d\nkill %d\nrm Killer.sh",pid,getpid());
-            fputs(kill2,ptr2);
-            fclose(ptr2);
-        }
-        int Tmkdir;
+    signals = 1 ;
+    while (signals) { 
         //printf("AA\n");
         time_t now;
         time(&now);
@@ -78,7 +83,7 @@ int main(int argc, char* argv[]) {
           execv("/bin/mkdir",arg);
         }
         printf("OTW LURR \n\n\n\n\n");
-        while((wait(&Tmkdir))>0);
+        sleep(1);
         pid_t c2 = fork();
         if (c2 < 0) {
           exit(EXIT_FAILURE);
@@ -147,6 +152,9 @@ int main(int argc, char* argv[]) {
                 execv("/usr/bin/rm",arg);
             } 
         }
-        sleep(40);
+        if (signals ==0) {
+            break;
+        }
+        else sleep(40);
     }
 }
