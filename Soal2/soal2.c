@@ -1,3 +1,11 @@
+//
+//  soal2.c
+//  soal2
+//
+//  Created by Arvel Gavrilla R. 
+//  on 15-04-2021
+//
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
