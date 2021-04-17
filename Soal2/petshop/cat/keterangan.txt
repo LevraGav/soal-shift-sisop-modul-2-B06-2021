@@ -1,0 +1,60 @@
+nama : reggie
+umur : 8tahun
+
+nama : jasper
+umur : 10tahun
+
+nama : koda
+umur : 11tahun
+
+nama : milo
+umur : 0.5tahun
+
+nama : tucker
+umur : 3tahun
+
+nama : remi
+umur : 8tahun
+
+nama : ellie
+umur : 3tahun
+
+nama : echo
+umur : 7tahun
+
+nama : nala
+umur : 4tahun
+
+nama : angmry
+umur : 7tahun
+
+nama : tilly
+umur : 6tahun
+
+nama : chester
+umur : 5tahun
+
+nama : luna
+umur : 4tahun
+
+nama : simba
+umur : 4tahun
+
+nama : ava
+umur : 6tahun
+
+nama : sus
+umur : 6tahun
+
+nama : atlas
+umur : 0.6tahun
+
+nama : chloe
+umur : 4tahun
+
+nama : oreo
+umur : 7tahun
+
+nama : neko
+umur : 3tahun
+

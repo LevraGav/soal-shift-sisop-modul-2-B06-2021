@@ -1,0 +1,6 @@
+nama : lulu
+umur : 5tahun
+
+nama : otis
+umur : 7tahun
+

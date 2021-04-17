@@ -1,0 +1,54 @@
+nama : max
+umur : 4tahun
+
+nama : ruby
+umur : 2tahun
+
+nama : gus
+umur : 5tahun
+
+nama : kobe
+umur : 10tahun
+
+nama : bruno
+umur : 9tahun
+
+nama : lalong
+umur : 3tahun
+
+nama : amo
+umur : 6tahun
+
+nama : angel
+umur : 4tahun
+
+nama : buster
+umur : 12tahun
+
+nama : maya
+umur : 7tahun
+
+nama : peanut
+umur : 6tahun
+
+nama : rufus
+umur : 1tahun
+
+nama : lola
+umur : 4tahun
+
+nama : pearl
+umur : 8tahun
+
+nama : charlie
+umur : 5tahun
+
+nama : cooper
+umur : 2tahun
+
+nama : walter
+umur : 6tahun
+
+nama : daisy
+umur : 4tahun
+

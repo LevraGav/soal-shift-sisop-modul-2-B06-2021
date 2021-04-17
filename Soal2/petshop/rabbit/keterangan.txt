@@ -1,0 +1,6 @@
+nama : carrot
+umur : 2tahun
+
+nama : rufus
+umur : 6tahun
+
