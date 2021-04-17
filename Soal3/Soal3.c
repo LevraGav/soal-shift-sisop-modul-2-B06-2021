@@ -1,3 +1,4 @@
+
 #define _POSIX_SOURCE
 #include <signal.h>
 #include <sys/types.h>
@@ -18,7 +19,6 @@ void orphan(int signum) {
 }
 
 int main(int argc, char* argv[]) {
-    int killT;
     if(strcmp(argv[1],"-z")==0){
         FILE *ptr2 = NULL;
         ptr2 = fopen("Killer.sh","w");
@@ -32,7 +32,6 @@ int main(int argc, char* argv[]) {
         fclose(ptr2);
         signal(SIGTERM,orphan);
      }
-    while(wait(&killT)>0);
   pid_t pid, sid;        // Variabel untuk menyimpan PID
  
   pid = fork();     // Menyimpan PID dari Child Process
@@ -92,19 +91,20 @@ int main(int argc, char* argv[]) {
             // *arg[] = {"chdir",StrTime,Null};
             // execv(/)
             chdir(StrTime);
-            int wait1;
             for (int i = 0; i < 10; i++) {
             time_t fnow;
             time(&fnow);
-            struct tm *ftimern;
-            ftimern = localtime(&fnow);
+            struct tm ftimern;
+            ftimern = *localtime(&fnow);
+            ftimern.tm_sec-=1;
+            mktime(&ftimern);
             char FStrTime[100];
             int epoch = (int)fnow % 1000;
             epoch += 50;
             //printf("%d\n\n\n\n\n",epoch);
             //char link2[4];
             //itoa(epoch,link2,10);
-            strftime(FStrTime, 100, "%Y-%m-%d_%X", ftimern);
+            strftime(FStrTime, 100, "%Y-%m-%d_%X", &ftimern);
             char link[100];
             sprintf(link,"https://picsum.photos/%d",epoch);
             printf("%s\n",link);
@@ -112,26 +112,24 @@ int main(int argc, char* argv[]) {
             if (c3<0) {
               exit(EXIT_FAILURE);
             }
-            if (c3==0) { 
+            if (c3==0) {
               char *arg[] = {"wget",link,"-O",FStrTime,NULL};
               execv("/usr/bin/wget",arg);
               //printf("%d\n",epoch);
             } 
             sleep(5); 
-          }
-            while(wait(&wait1)>0);
+          
             char status[] = {"Download Success"};
             for (int i=0; i<strlen(status);i++) {
-                if (status[i]!=32) { 
-                     status[i]+=5;
-                     if (status[i]>90&&status[i]<97) {
-                         status[i]-=26;
-                     }
-                     if (status[i]>122) {
-                         status[i]-=26;
-                     }      
-                 }
-
+                if (status[i]!=32) {     
+                    status[i]+=5;
+                    if (status[i]>90&&status[i]<97) {
+                        status[i]-=26;
+                    }
+                    if (status[i]>122) {
+                        status[i]-=26;
+                    }      
+                }
             }
             FILE *ptr = NULL;
             ptr= fopen("Status.txt","w");
@@ -147,7 +145,7 @@ int main(int argc, char* argv[]) {
                 char abc[30];
                 strcpy(abc,StrTime);
                 strcat(abc,".zip");
-                printf("%s\n%s\n\n",StrTime,abc);
+                //printf("%s\n%s\n\n",StrTime,abc);
                 char *arg[] = {"zip",abc,"-r",StrTime,NULL};
                 execv("/usr/bin/zip",arg);
             }
@@ -164,6 +162,6 @@ int main(int argc, char* argv[]) {
         if (signals ==0) {
             break;
         }
-        else sleep(40);
+        else sleep(39);
     }
 }
