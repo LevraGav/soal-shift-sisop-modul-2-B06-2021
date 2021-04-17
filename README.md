@@ -196,6 +196,7 @@ Setiap direktori yang sudah dibuat diisi dengan 10 gambar yang didownload dari `
 ```
 ### Penjelasan
 Pertama-tama, menggunakan metode yang sama seperti yang diatas, kita mengambil waktu untuk dijadikan nama file, lalu mengambil epoch saat itu dan ditambah 50 untuk dijadikan resolusi file tersebut. Untuk mendownload file tersebut, kita membutuhkan link untuk download sendiri. Hal ini dapat didapatkan dengan menaruh epoch tadi ke belakang "https://picsum.photos/" dengan menggunakan sprintf(). Lalu kita fork agar menjadi proses baru lalu lakukan wget dengan argumen link yang tadi sudah dibuat dan -O agar ter-rename ke nama file yang baru dibuat.
+
 ![image](https://user-images.githubusercontent.com/31591861/115103399-c3d14e00-9f7b-11eb-96fc-6ab35a7e9b02.png)
 
 ## 3C
@@ -250,6 +251,11 @@ Lalu setelah mendownload, kita lakukan wait agar yakin program telah sepenuhnya 
 setelah itu, kita dapat membuat status.txt via fopen(), lalu write cipher tadi menggunakan fputs() lalu close file tersebut agar terwrite.
 ![image](https://user-images.githubusercontent.com/31591861/115103813-f3358a00-9f7e-11eb-966b-a4117700336f.png)
 lalu kita change directory keluar folder tersebut lalu dengan execv menzip dengan nama folder yang sama. Lalu kita wait agar kita yakin selesai lalu dapat di RM -r folder lama tersebut.
+
+![image](https://user-images.githubusercontent.com/31591861/115105162-55928880-9f87-11eb-82b7-3e91b59f27a5.png)
+
+![image](https://user-images.githubusercontent.com/31591861/115105166-5f1bf080-9f87-11eb-9dbc-5b4efbe367a3.png)
+
 
 ## 3D
 Untuk mempermudah pengendalian program, pembimbing magang Ranora ingin program tersebut akan men-generate sebuah program “Killer” yang executable, dimana program tersebut akan menterminasi semua proses program yang sedang berjalan dan akan menghapus dirinya sendiri setelah program dijalankan. Karena Ranora menyukai sesuatu hal yang baru, maka Ranora memiliki ide untuk program “Killer” yang dibuat nantinya harus merupakan <b>program bash</b>.
