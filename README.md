@@ -127,22 +127,129 @@ Ranora meminta bantuanmu untuk membantunya dalam membuat program tersebut. Karen
 Ranora harus membuat sebuah program C yang dimana setiap 40 detik membuat sebuah direktori dengan nama sesuai timestamp [YYYY-mm-dd_HH:ii:ss].
 
 ### Pengerjaan
-
+```bash
+while(signals) {
+  time_t now;
+  time(&now);
+  struct tm *timern;
+  timern = localtime(&now);
+  char StrTime[100];
+  strftime(StrTime, 100, "%Y-%m-%d_%X", timern);
+  char *arg[] = {"mkdir",StrTime,NULL}; 
+  sleep(1);
+  pid_t c1 = fork();
+  if (c1 < 0) {
+    exit(EXIT_FAILURE);
+  } 
+  if (c1 == 0) {
+    execv("/bin/mkdir",arg);
+  }
+  ...
+  sleep(40);
+}
+```
 ### Penjelasan
+Setelah pembuatan daemon, kita mengambil waktu sekarang dengan fungsi time(), lalu diconvert ke local time dan diparse menjadi suatu string menggunaakn function strftime.
+String tersebut lalu dipass ke array of char untuk dijadikan argument. Lalu kita dapat menggunakan fork dan execv untuk memanggil function mkdir dan mempassing argumen tersebut agar file terbuat dengan baik.
+![image](https://user-images.githubusercontent.com/31591861/115103061-0fcec380-9f79-11eb-951a-c2b1bc570d1c.png)
 
 ## 3B
 Setiap direktori yang sudah dibuat diisi dengan 10 gambar yang didownload dari ```https://picsum.photos/```, dimana setiap gambar akan didownload setiap 5 detik. Setiap gambar yang didownload akan diberi nama dengan format timestamp ```[YYYY-mm-dd_HH:ii:ss]``` dan gambar tersebut berbentuk persegi dengan ukuran (n%1000) + 50 pixel dimana n adalah detik Epoch Unix.
 
 ### Pengerjaan
-
+```bash
+ pid_t c2 = fork();
+        if (c2 < 0) {
+          exit(EXIT_FAILURE);
+        } 
+        if (c2 == 0) {
+            // *arg[] = {"chdir",StrTime,Null};
+            // execv(/)
+            chdir(StrTime);
+            int wait1;
+            for (int i = 0; i < 10; i++) {
+            time_t fnow;
+            time(&fnow);
+            struct tm *ftimern;
+            ftimern = localtime(&fnow);
+            char FStrTime[100];
+            int epoch = (int)fnow % 1000;
+            epoch += 50;
+            //printf("%d\n\n\n\n\n",epoch);
+            //char link2[4];
+            //itoa(epoch,link2,10);
+            strftime(FStrTime, 100, "%Y-%m-%d_%X", ftimern);
+            char link[100];
+            sprintf(link,"https://picsum.photos/%d",epoch);
+            printf("%s\n",link);
+            pid_t c3 = fork();
+            if (c3<0) {
+              exit(EXIT_FAILURE);
+            }
+            if (c3==0) { 
+              char *arg[] = {"wget",link,"-O",FStrTime,NULL};
+              execv("/usr/bin/wget",arg);
+              //printf("%d\n",epoch);
+            } 
+            sleep(5); 
+          }
+```
 ### Penjelasan
+Pertama-tama, menggunakan metode yang sama seperti yang diatas, kita mengambil waktu untuk dijadikan nama file, lalu mengambil epoch saat itu dan ditambah 50 untuk dijadikan resolusi file tersebut. Untuk mendownload file tersebut, kita membutuhkan link untuk download sendiri. Hal ini dapat didapatkan dengan menaruh epoch tadi ke belakang "https://picsum.photos/" dengan menggunakan sprintf(). Lalu kita fork agar menjadi proses baru lalu lakukan wget dengan argumen link yang tadi sudah dibuat dan -O agar ter-rename ke nama file yang baru dibuat.
+![image](https://user-images.githubusercontent.com/31591861/115103399-c3d14e00-9f7b-11eb-96fc-6ab35a7e9b02.png)
 
 ## 3C
 Setelah direktori telah terisi dengan 10 gambar, program tersebut akan membuat sebuah file ```status.txt```, dimana didalamnya berisi pesan ```Download Success``` yang terenkripsi dengan teknik Caesar Cipher dan dengan shift 5. Caesar Cipher adalah Teknik enkripsi sederhana yang dimana dapat melakukan enkripsi string sesuai dengan shift/key yang kita tentukan. Misal huruf “A” akan dienkripsi dengan shift 4 maka akan menjadi “E”. Karena Ranora orangnya perfeksionis dan rapi, dia ingin setelah file tersebut dibuat, direktori akan di zip dan direktori akan didelete, sehingga menyisakan hanya file zip saja.
 
 ### Pengerjaan
+ ```bash
+ while(wait(&wait1)>0);
+            char status[] = {"Download Success"};
+            for (int i=0; i<strlen(status);i++) {
+                if (status[i]!=32) { 
+                     status[i]+=5;
+                     if (status[i]>90&&status[i]<97) {
+                         status[i]-=26;
+                     }
+                     if (status[i]>122) {
+                         status[i]-=26;
+                     }      
+                 }
 
+            }
+            FILE *ptr = NULL;
+            ptr= fopen("Status.txt","w");
+            fputs(status, ptr);
+            fclose(ptr); 
+            chdir("..");
+            int wait3;
+            pid_t c4 = fork();
+            if (c4<0) {
+                exit(EXIT_FAILURE);
+            }
+            if (c4==0) {
+                char abc[30];
+                strcpy(abc,StrTime);
+                strcat(abc,".zip");
+                printf("%s\n%s\n\n",StrTime,abc);
+                char *arg[] = {"zip",abc,"-r",StrTime,NULL};
+                execv("/usr/bin/zip",arg);
+            }
+            while(wait(&wait3)>0);
+            pid_t c7 = fork();
+            if (c7<0) {
+                exit(EXIT_FAILURE);
+            }
+            if (c7==0) {
+                char *arg[] = {"rm","-r",StrTime,NULL};
+                execv("/usr/bin/rm",arg);
+            } 
+ ```
 ### Penjelasan
+Lalu setelah mendownload, kita lakukan wait agar yakin program telah sepenuhnya selesai. karena kita perlu membuat sebuah file yang bernama "status.txt", sebelumnya kita perlu tahu cara membuat caesar cipher. Cara gampang membuat caesar cipher hanyalah menambah ascii dari alphabet dan jika terlewat dari alphabet, kita wrap around awal lagi
+setelah itu, kita dapat membuat status.txt via fopen(), lalu write cipher tadi menggunakan fputs() lalu close file tersebut agar terwrite.
+![image](https://user-images.githubusercontent.com/31591861/115103813-f3358a00-9f7e-11eb-966b-a4117700336f.png)
+lalu kita change directory keluar folder tersebut lalu dengan execv menzip dengan nama folder yang sama. Lalu kita wait agar kita yakin selesai lalu dapat di RM -r folder lama tersebut.
 
 ## 3D
 Untuk mempermudah pengendalian program, pembimbing magang Ranora ingin program tersebut akan men-generate sebuah program “Killer” yang executable, dimana program tersebut akan menterminasi semua proses program yang sedang berjalan dan akan menghapus dirinya sendiri setelah program dijalankan. Karena Ranora menyukai sesuatu hal yang baru, maka Ranora memiliki ide untuk program “Killer” yang dibuat nantinya harus merupakan <b>program bash</b>.
