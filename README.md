@@ -11,7 +11,7 @@ Bayu Adjie Sidharta | 05111940000172
 ## Link-link
 - [Soal](https://docs.google.com/document/d/121ZqwL7KXiKy3YpQgP6INuYlb4969WOj1GlZ9umO65w/edit)
 - [Jawaban Soal 1]()
-- [Jawaban Soal 2]()
+- [Jawaban Soal 2](https://github.com/LevraGav/soal-shift-sisop-modul-2-B06-2021/tree/main/Soal2)
 - [Jawaban Soal 3]()
 
 # --- No 1 ---
