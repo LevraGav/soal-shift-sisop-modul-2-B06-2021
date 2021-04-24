@@ -135,17 +135,15 @@ while(signals) {
   timern = localtime(&now);
   char StrTime[100];
   strftime(StrTime, 100, "%Y-%m-%d_%X", timern);
-  char *arg[] = {"mkdir",StrTime,NULL}; 
-  sleep(1);
-  pid_t c1 = fork();
-  if (c1 < 0) {
-    exit(EXIT_FAILURE);
-  } 
-  if (c1 == 0) {
-    execv("/bin/mkdir",arg);
+  if (fork()==0) {
+      char *arg[] = {"mkdir", StrTime, NULL};
+      execv("/bin/mkdir", arg);
   }
+  sleep(1);
+  if(fork()==0) {
   ...
-  sleep(40);
+  }
+  sleep(39);
 }
 ```
 ### Penjelasan
@@ -158,41 +156,27 @@ Setiap direktori yang sudah dibuat diisi dengan 10 gambar yang didownload dari `
 
 ### Pengerjaan
 ```bash
- pid_t c2 = fork();
-        if (c2 < 0) {
-          exit(EXIT_FAILURE);
-        } 
-        if (c2 == 0) {
-            // *arg[] = {"chdir",StrTime,Null};
-            // execv(/)
-            chdir(StrTime);
-            int wait1;
-            for (int i = 0; i < 10; i++) {
-            time_t fnow;
-            time(&fnow);
-            struct tm *ftimern;
-            ftimern = localtime(&fnow);
-            char FStrTime[100];
-            int epoch = (int)fnow % 1000;
-            epoch += 50;
-            //printf("%d\n\n\n\n\n",epoch);
-            //char link2[4];
-            //itoa(epoch,link2,10);
-            strftime(FStrTime, 100, "%Y-%m-%d_%X", ftimern);
-            char link[100];
-            sprintf(link,"https://picsum.photos/%d",epoch);
-            printf("%s\n",link);
-            pid_t c3 = fork();
-            if (c3<0) {
-              exit(EXIT_FAILURE);
-            }
-            if (c3==0) { 
-              char *arg[] = {"wget",link,"-O",FStrTime,NULL};
-              execv("/usr/bin/wget",arg);
-              //printf("%d\n",epoch);
-            } 
-            sleep(5); 
-          }
+if (fork()==0) {
+  chdir(StrTime);
+  for (int i = 0;i<10;i++) {
+    time_t fnow;
+    time(&fnow);
+    struct tm ftimern;
+    ftimern = *localtime(&fnow);
+    ftimern.tm_sec -= 1;
+    mktime(&ftimern);
+    char FStrTime[100];
+    int epoch = (int)fnow % 1000;
+    epoch += 50;
+    strftime(FStrTime, 100, "%Y-%m-%d_%X", &ftimern);
+    char link[100];
+    sprintf(link, "https://picsum.photos/%d", epoch);
+    if (fork()==0) {
+        char *arg[] = {"wget", link, "-O", FStrTime, NULL};
+        execv("/usr/bin/wget", arg);
+    }
+    sleep(5);
+  }
 ```
 ### Penjelasan
 Pertama-tama, menggunakan metode yang sama seperti yang diatas, kita mengambil waktu untuk dijadikan nama file, lalu mengambil epoch saat itu dan ditambah 50 untuk dijadikan resolusi file tersebut. Untuk mendownload file tersebut, kita membutuhkan link untuk download sendiri. Hal ini dapat didapatkan dengan menaruh epoch tadi ke belakang "https://picsum.photos/" dengan menggunakan sprintf(). Lalu kita fork agar menjadi proses baru lalu lakukan wget dengan argumen link yang tadi sudah dibuat dan -O agar ter-rename ke nama file yang baru dibuat.
@@ -204,47 +188,31 @@ Setelah direktori telah terisi dengan 10 gambar, program tersebut akan membuat s
 
 ### Pengerjaan
  ```bash
- while(wait(&wait1)>0);
-            char status[] = {"Download Success"};
-            for (int i=0; i<strlen(status);i++) {
-                if (status[i]!=32) { 
-                     status[i]+=5;
-                     if (status[i]>90&&status[i]<97) {
-                         status[i]-=26;
-                     }
-                     if (status[i]>122) {
-                         status[i]-=26;
-                     }      
-                 }
-
-            }
-            FILE *ptr = NULL;
-            ptr= fopen("Status.txt","w");
-            fputs(status, ptr);
-            fclose(ptr); 
-            chdir("..");
-            int wait3;
-            pid_t c4 = fork();
-            if (c4<0) {
-                exit(EXIT_FAILURE);
-            }
-            if (c4==0) {
-                char abc[30];
-                strcpy(abc,StrTime);
-                strcat(abc,".zip");
-                printf("%s\n%s\n\n",StrTime,abc);
-                char *arg[] = {"zip",abc,"-r",StrTime,NULL};
-                execv("/usr/bin/zip",arg);
-            }
-            while(wait(&wait3)>0);
-            pid_t c7 = fork();
-            if (c7<0) {
-                exit(EXIT_FAILURE);
-            }
-            if (c7==0) {
-                char *arg[] = {"rm","-r",StrTime,NULL};
-                execv("/usr/bin/rm",arg);
-            } 
+char status[] = {"Download Success"};
+  for (int i = 0; i < strlen(status); i++)
+  {
+      if (status[i] != 32){
+          status[i] += 5;
+          if (status[i] > 90 && status[i] < 97){
+              status[i] -= 26;
+          }
+          if (status[i] > 122){
+              status[i] -= 26;
+          }
+      }
+  }
+  FILE *ptr = NULL;
+  ptr = fopen("Status.txt", "w");
+  fputs(status, ptr);
+  fclose(ptr);
+  chdir("..");
+  char abc[30];
+  strcpy(abc, StrTime);
+  strcat(abc, ".zip");
+  //printf("%s\n%s\n\n",StrTime,abc);
+  char *arg[] = {"zip", abc, "-rm", StrTime, NULL};
+  execv("/usr/bin/zip", arg);
+ }
  ```
 ### Penjelasan
 Lalu setelah mendownload, kita lakukan wait agar yakin program telah sepenuhnya selesai. karena kita perlu membuat sebuah file yang bernama "status.txt", sebelumnya kita perlu tahu cara membuat caesar cipher. Cara gampang membuat caesar cipher hanyalah menambah ascii dari alphabet dan jika terlewat dari alphabet, kita wrap around awal lagi
@@ -261,14 +229,42 @@ lalu kita change directory keluar folder tersebut lalu dengan execv menzip denga
 Untuk mempermudah pengendalian program, pembimbing magang Ranora ingin program tersebut akan men-generate sebuah program “Killer” yang executable, dimana program tersebut akan menterminasi semua proses program yang sedang berjalan dan akan menghapus dirinya sendiri setelah program dijalankan. Karena Ranora menyukai sesuatu hal yang baru, maka Ranora memiliki ide untuk program “Killer” yang dibuat nantinya harus merupakan <b>program bash</b>.
 
 ### Pengerjaan
+```bash
+FILE *ptr2 = NULL;
+      ptr2 = fopen("Killer.sh", "w");
+      fputs("#!/bin/bash\nkillall soal3\n rm Killer.sh", ptr2);
+      fclose(ptr2);
+```
 
 ### Penjelasan
+Setelah semua selesai dilakukan, program akan membuat sebuah bash script untuk membunuh daemon, hal tersebut dapat dilakukan dengan menggunakan killall karena kita tau nama process tersebut.
+![image](https://user-images.githubusercontent.com/31591861/115952054-3a3af680-a50e-11eb-8b48-b9fd9a677f77.png)
+
 
 ## 3E
 Pembimbing magang Ranora juga ingin nantinya program utama yang dibuat Ranora dapat dijalankan di dalam dua mode. Untuk mengaktifkan mode pertama, program harus dijalankan dengan argumen -z, dan Ketika dijalankan dalam mode pertama, program utama akan langsung menghentikan semua operasinya Ketika program Killer dijalankan. Sedangkan untuk mengaktifkan mode kedua, program harus dijalankan dengan argumen -x, dan Ketika dijalankan dalam mode kedua, program utama akan berhenti namun membiarkan proses di setiap direktori yang masih berjalan hingga selesai (Direktori yang sudah dibuat akan mendownload gambar sampai selesai dan membuat file txt, lalu zip dan delete direktori).
 
 ### Pengerjaan
-
+```bash
+if (strcmp(argv[1], "-z") == 0)
+    {
+        FILE *ptr2 = NULL;
+        ptr2 = fopen("Killer.sh", "w");
+        fputs("#!/bin/bash\nkillall soal3\n rm Killer.sh", ptr2);
+        fclose(ptr2);
+    }
+    if (strcmp(argv[1], "-x") == 0)
+    {
+        FILE *ptr2 = NULL;
+        ptr2 = fopen("Killer.sh", "w");
+        fputs("#!/bin/bash\nkillall -15 soal3\n rm Killer.sh", ptr2);
+        fclose(ptr2);
+        signal(SIGTERM, orphan);
+    }
+```
 ### Penjelasan
+Kita akan mengcompare argumen yang dimasukan ke dalam untuk mengetahui tipe killer yang mana yang dibuat. Jika -z, kita akan menggunakan killer yang lama (soal 3d) dan jika argumen yang diterima adalah -x, kita akan memberikan sinyal sigterm dalam killall. Jika program mendengar sinyal sigterm, while loop nya akan dijadikan 0 agar menahan kasus dimana sigterm sendiri tidak berhasil untuk menghentikan process.
+![image](https://user-images.githubusercontent.com/31591861/115952055-3c9d5080-a50e-11eb-87fc-87d8f8c911fe.png)
+![image](https://user-images.githubusercontent.com/31591861/115952079-59398880-a50e-11eb-995a-27b906cc0e9a.png)
 
 
