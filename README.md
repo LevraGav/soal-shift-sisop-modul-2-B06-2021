@@ -264,6 +264,7 @@ if (strcmp(argv[1], "-z") == 0)
 ```
 ### Penjelasan
 Kita akan mengcompare argumen yang dimasukan ke dalam untuk mengetahui tipe killer yang mana yang dibuat. Jika -z, kita akan menggunakan killer yang lama (soal 3d) dan jika argumen yang diterima adalah -x, kita akan memberikan sinyal sigterm dalam killall. Jika program mendengar sinyal sigterm, while loop nya akan dijadikan 0 agar menahan kasus dimana sigterm sendiri tidak berhasil untuk menghentikan process.
+
 ![image](https://user-images.githubusercontent.com/31591861/115952055-3c9d5080-a50e-11eb-87fc-87d8f8c911fe.png)
 ![image](https://user-images.githubusercontent.com/31591861/115952079-59398880-a50e-11eb-995a-27b906cc0e9a.png)
 
