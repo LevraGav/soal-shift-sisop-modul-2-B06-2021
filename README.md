@@ -70,12 +70,92 @@ Loba sangat mengapresiasi bantuanmu, minggu depan ia akan mentraktir makan malam
 - Tidak boleh menggunakan fungsi system(), mkdir(), dan rename().
 - Menggunakan fork dan exec.
 
+### Pendahuluan
+Pertama - tama kami membuat sebuah fungsi terlebih dahulu, dimana fungsi ini sendiri berfungsi agar setiap kami melakukan eksekusi program dengan execv maka kami tidak perlu melakukan deklarasi ```fork()``` berulang kali. Hal ini juga bertujuan untuk membuat kodingan lebih rapi dan bersih.
+```bash
+// Fungsi ini agar tidak perlu melakukan fork berulang kali
+void call_function (char execute[], char *variable_path[]) //execute tuh isinya /bin/execute
+{ 
+    int status; 
+    pid_t child_id;
+    child_id = fork();
+
+    if(child_id == 0)
+    {
+        execv(execute, variable_path);
+    }
+
+    else
+    {
+        ((wait(&status))>0);
+        return; 
+    } 
+}
+```
+
 ## 2A
 Pertama-tama program perlu mengextract zip yang diberikan ke dalam folder “/home/[user]/modul2/petshop”. Karena bos Loba teledor, dalam zip tersebut bisa berisi folder-folder yang tidak penting, maka program harus bisa membedakan file dan folder sehingga dapat memproses file yang seharusnya dikerjakan dan menghapus folder-folder yang tidak dibutuhkan.
 
 ### Pengerjaan
+```bash
+//2a
+void Unzip_The_File()
+{
+    pid_t child_id;
+
+    int status;
+
+    char destination[100] = "/home/arvel/Documents/Praktikum2/Soal2/petshop";
+
+    char source[100] = "/home/arvel/Downloads/pets.zip";
+
+    child_id = fork();
+
+    if (child_id < 0)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    if(child_id == 0)
+    {
+        // Membuat folder di lokasi baru
+        // -p bertujuan agar tidak perlu melakukan mkdir berkali - kali, contohnya 
+        // mkdir -p /home/arvel/Documents/Praktikum2/Soal2/petshop, maka folder praktikum2, soal2, dan petshop
+        // akan langsung dibuat secara otomatis
+        char *make_folder[] = {"mkdir","-p", destination, NULL};
+        call_function("/bin/mkdir", make_folder);
+
+        // Melakukan unzip pets.zip di lokasi folder yang baru
+        // .jpg berfungsi untuk hanya meng-unzip file bertipe jpg dan mengabaikan file tipe jenis lain
+        char *unzip_file[] = {"unzip", "-q", source, "-d", destination, "*.jpg", NULL};
+        call_function("/bin/unzip", unzip_file);
+    }
+
+    else
+    {
+        while ((wait(&status)) > 0);
+    }
+}
+```
 
 ### Penjelasan
+```bash
+// Membuat folder di lokasi baru
+        // -p bertujuan agar tidak perlu melakukan mkdir berkali - kali, contohnya 
+        // mkdir -p /home/arvel/Documents/Praktikum2/Soal2/petshop, maka folder praktikum2, soal2, dan petshop
+        // akan langsung dibuat secara otomatis
+        char *make_folder[] = {"mkdir","-p", destination, NULL};
+        call_function("/bin/mkdir", make_folder);
+```
+Fungsi diatas berfungsi untuk membuat sebuah folder di lokasi / direktori baru, pertama - tama kami menggunakan sebuah variable pointer untuk menampung data - data di dalam sebuah array, yaitu berupa ```mkdir``` (penamaan perintah), penggunaan ```-p``` (parent) untuk membuat parent directory jika dibutuhkan, dan ```destination``` (deklarasi lokasi pembuatan folder dan nama folder). Kemudian semua data di dalam array tadi akan dieksekusi dengan menggunakan fungsi ```call_function``` yang sudah di deklarasikan di awal kodingan.
+
+```bash
+// Melakukan unzip pets.zip di lokasi folder yang baru
+        // .jpg berfungsi untuk hanya meng-unzip file bertipe jpg dan mengabaikan file tipe jenis lain
+        char *unzip_file[] = {"unzip", "-q", source, "-d", destination, "*.jpg", NULL};
+        call_function("/bin/unzip", unzip_file);
+```
+Hampir sama dengan fungsi sebelumnya. Fungsi diatas bertujuan untuk melakukan ekstrak terhadap sebuah file bertipe zip di sebuah direktori untuk kemudian hasil ekstraknya akan disimpan di direktori tertentu. Dengan menggunakan variable pointer untuk menyimpan data - data di dalam sebuah array, yaitu berupa ```unzip``` (penamaan perintah), penggunaan ```-q``` (agar saat program dieksekusi tidak memenuhi terminal), ```source``` (sumber atau lokasi tempat file zip yang akan diekstrak), penggunaan ```-d``` (untuk merujuk ke direktori tertentu), ```destination``` (deklarasi direktori / lokasi tempat hasil ekstrak akan disimpan), dan penggunaan ```.jpg``` (agar file yang diekstrak hanya file yang bertipe JPG). Kemudian semua data di dalam array tadi akan dieksekusi dengan menggunakan fungsi ```call_function``` yang sudah di deklarasikan di awal kodingan.
 
 ## 2B
 Foto peliharaan perlu dikategorikan sesuai jenis peliharaan, maka kamu harus membuat folder untuk setiap jenis peliharaan yang ada dalam zip. Karena kamu tidak mungkin memeriksa satu-persatu, maka program harus membuatkan folder-folder yang dibutuhkan sesuai dengan isi zip.
