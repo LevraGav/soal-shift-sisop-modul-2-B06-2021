@@ -93,6 +93,9 @@ void call_function (char execute[], char *variable_path[]) //execute tuh isinya 
 }
 ```
 
+### Source File (ZIP)
+![Source File](https://user-images.githubusercontent.com/72689610/115994283-86fefa00-a600-11eb-903d-90302eec56d3.png)
+
 ## 2A
 Pertama-tama program perlu mengextract zip yang diberikan ke dalam folder “/home/[user]/modul2/petshop”. Karena bos Loba teledor, dalam zip tersebut bisa berisi folder-folder yang tidak penting, maka program harus bisa membedakan file dan folder sehingga dapat memproses file yang seharusnya dikerjakan dan menghapus folder-folder yang tidak dibutuhkan.
 
@@ -158,6 +161,8 @@ Fungsi diatas berfungsi untuk membuat sebuah folder di lokasi / direktori baru, 
 Hampir sama dengan fungsi sebelumnya. Fungsi diatas bertujuan untuk melakukan ekstrak terhadap sebuah file bertipe zip di sebuah direktori untuk kemudian hasil ekstraknya akan disimpan di direktori tertentu. Dengan menggunakan variable pointer untuk menyimpan data - data di dalam sebuah array, yaitu berupa ```unzip``` (penamaan perintah), penggunaan ```-q``` (agar saat program dieksekusi tidak memenuhi terminal), ```source``` (sumber atau lokasi tempat file zip yang akan diekstrak), penggunaan ```-d``` (untuk merujuk ke direktori tertentu), ```destination``` (deklarasi direktori / lokasi tempat hasil ekstrak akan disimpan), dan penggunaan ```.jpg``` (agar file yang diekstrak hanya file yang bertipe JPG). Kemudian semua data di dalam array tadi akan dieksekusi dengan menggunakan fungsi ```call_function``` yang sudah di deklarasikan di awal kodingan.
 
 ### Output
+![Output No 2A 1](https://user-images.githubusercontent.com/72689610/115994224-456e4f00-a600-11eb-85bd-e2dd56240d5c.png)
+![Output Soal 2A](https://user-images.githubusercontent.com/72689610/115994122-e14b8b00-a5ff-11eb-8d7a-065078b58ca3.png)
 
 ### Pendahuluan 2B, 2C, dan 2D
 Fungsi di bawah ini berfungsi untuk melakukan pemotongan (menghilangkan) ekstensi .jpg dari setiap nama file yang ada di dalam folder
@@ -390,6 +395,8 @@ void RemoveFiles()
 ```
 
 ### Output
+![Output Soal 2C](https://user-images.githubusercontent.com/72689610/115994329-c62d4b00-a600-11eb-89b0-9baa4d75c321.png)
+![Output Soal 2D](https://user-images.githubusercontent.com/72689610/115994334-c9283b80-a600-11eb-981c-70b7bc4190e6.png)
 
 ## 2E
 Di setiap folder buatlah sebuah file ```keterangan.txt``` yang berisi <b>nama</b> dan <b>umur semua peliharaan</b> dalam folder tersebut. Format harus sesuai contoh.
@@ -431,6 +438,7 @@ fclose(make_txt);
 Pertama kami membuat sebuah path baru dengan nama ```/keterangan.txt```, kemudian digabungkan ke dalam variable ```txt_path``` yang berisi data path folder petshop. Kemudian kami menggunakan kombinasi antara ```strcpy``` dan ```strcat``` untuk memasukkan data ke dalam ```keterangan.txt``` agar sesuai dengan format soal. Dengan menggunakan variable pointer ```*make_txt``` untuk membuka dan melakukan ```append``` isi data dari variable ```data_txt``` ke dalam ```txt_path```. Jika semua data sudah di ```append```, maka file akan ditutup kembali.
 
 ### Output
+![Output Soal No 2E](https://user-images.githubusercontent.com/72689610/115994393-f96fda00-a600-11eb-9bb7-6838a7652258.png)
 
 # --- No 3 ---
 Ranora adalah mahasiswa Teknik Informatika yang saat ini sedang menjalani magang di perusahan ternama yang bernama “FakeKos Corp.”, perusahaan yang bergerak dibidang keamanan data. Karena Ranora masih magang, maka beban tugasnya tidak sebesar beban tugas pekerja tetap perusahaan. Di hari pertama Ranora bekerja, pembimbing magang Ranora memberi tugas pertamanya untuk membuat sebuah program.
