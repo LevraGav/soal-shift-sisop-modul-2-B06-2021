@@ -430,6 +430,8 @@ fclose(make_txt);
 ### Penjelasan
 Pertama kami membuat sebuah path baru dengan nama ```/keterangan.txt```, kemudian digabungkan ke dalam variable ```txt_path``` yang berisi data path folder petshop. Kemudian kami menggunakan kombinasi antara ```strcpy``` dan ```strcat``` untuk memasukkan data ke dalam ```keterangan.txt``` agar sesuai dengan format soal. Dengan menggunakan variable pointer ```*make_txt``` untuk membuka dan melakukan ```append``` isi data dari variable ```data_txt``` ke dalam ```txt_path```. Jika semua data sudah di ```append```, maka file akan ditutup kembali.
 
+### Output
+
 # --- No 3 ---
 Ranora adalah mahasiswa Teknik Informatika yang saat ini sedang menjalani magang di perusahan ternama yang bernama “FakeKos Corp.”, perusahaan yang bergerak dibidang keamanan data. Karena Ranora masih magang, maka beban tugasnya tidak sebesar beban tugas pekerja tetap perusahaan. Di hari pertama Ranora bekerja, pembimbing magang Ranora memberi tugas pertamanya untuk membuat sebuah program.
 
