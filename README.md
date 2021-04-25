@@ -249,12 +249,12 @@ String nama file terdiri dari 3 komponen, yaitu jenis, nama, dan umur hewan.
 
 ```bash
 for(Token2 = strtok_r(Token1, ";", &Token4); Token2 != NULL; Token2 = strtok_r(NULL, ";", &Token4))
-                        {
-                            if(x==0)strcpy(Tipe_Hewan, Token2);
-                            if(x==1)strcpy(Nama_Hewan, Token2);
-                            if(x==2)strcpy(Umur_Hewan, Token2);
-                            x++;
-                        }  
+{
+  if(x==0)strcpy(Tipe_Hewan, Token2);
+  if(x==1)strcpy(Nama_Hewan, Token2);
+  if(x==2)strcpy(Umur_Hewan, Token2);
+  x++;
+}  
 ```
 
 ## 2B
@@ -262,23 +262,134 @@ Foto peliharaan perlu dikategorikan sesuai jenis peliharaan, maka kamu harus mem
 Contoh: Jenis peliharaan kucing akan disimpan dalam ```/petshop/cat```, jenis peliharaan kura-kura akan disimpan dalam ```/petshop/turtle```.
 
 ### Pengerjaan
+```bash
+ // 2B
+// Membuat Folder berdasarkan jenis hewan
+strcat(variable_path, Tipe_Hewan);
+char *Make_Folder[] = {"mkdir", "-p", variable_path, NULL};
+call_function("/bin/mkdir", Make_Folder);
+```
 
 ### Penjelasan
+```bash
+strcat(variable_path, Tipe_Hewan);
+```
+Setelah melakukan pemisahan string nama file, maka data jenis hewan yang disimpan di dalam array ```Tipe_Hewan``` bisa digunakan untuk membuat folder / directory baru. Caranya adalah dengan menambahkan data jenis hewan di dalam array ```Tipe_Hewan``` ke dalam array ```variable_path``` yang berisi data path folder ```petshop``` yang sudah dibuat di soal 2A.  
 
-## 2C
+```bash
+char *Make_Folder[] = {"mkdir", "-p", variable_path, NULL};
+call_function("/bin/mkdir", Make_Folder);
+```
+Dengan sebuah variable pointer untuk menampung data - data di dalam sebuah array, yaitu berupa ```mkdir``` (penamaan perintah), penggunaan ```-p``` (parent) untuk membuat parent directory jika dibutuhkan, dan ```variable_path``` (deklarasi path folder petshop). Kemudian semua data di dalam array tadi akan dieksekusi dengan menggunakan fungsi ```call_function``` yang sudah di deklarasikan di awal kodingan.
+
+# Output
+
+## 2C dan 2D
 Setelah folder kategori berhasil dibuat, programmu akan memindahkan foto ke folder dengan kategori yang sesuai dan di rename dengan nama peliharaan.
 Contoh: ```/petshop/cat/joni.jpg```. 
 
-### Pengerjaan
-
-### Penjelasan
-
-## 2D
 Karena dalam satu foto bisa terdapat lebih dari satu peliharaan maka foto harus di pindah ke masing-masing kategori yang sesuai. Contoh: foto dengan nama ```dog;baro;1_cat;joni;2.jpg``` dipindah ke folder ```/petshop/cat/joni.jpg” dan “/petshop/dog/baro.jpg```.
 
 ### Pengerjaan
+```bash
+// 2C
+// Memindahkan (Mengcopy) file ke direktori baru
+strcat(Nama_Hewan, ".jpg");
+strcat(variable_path2, result_2);
+
+char *Copy_Folder[] = {"cp", variable_path2, variable_path, NULL};
+call_function("/bin/cp", Copy_Folder);
+
+// Melakukan rename nama File dengan nama hewannya
+strcpy(variable_path3, variable_path);
+strcat(variable_path3, "/");
+
+strcat(variable_path3, result_2);
+strcat(variable_path, "/");
+                        
+strcat(variable_path, Nama_Hewan);
+
+char *rename_image_file[] = {"rename_image_file", variable_path3, variable_path, NULL};
+call_function("/bin/mv", rename_image_file);
+```
 
 ### Penjelasan
+Untuk memindahkan file foto ke dalam masing - masing folder sesuai dengan kategori jenis hewannya, kami menggunakan fungsi ```cp``` untuk menyalin file ke destination baru. Disini variable ```result_2``` berisi data nama tiap file yang kemudian akan digabungkan dengan variable ```variable_path2``` yang berisi path folder petshop agar setiap file bisa dilakukan ```copy``` menuju path setiap folder.
+```bash
+strcat(variable_path2, result_2);
+
+char *Copy_Folder[] = {"cp", variable_path2, variable_path, NULL};
+call_function("/bin/cp", Copy_Folder);
+```
+Fungsi bagian di bawah ini adalah melakukan rename nama setiap file. Karena array ```Nama_Hewan``` berisi data nama hewan maka nantinya setiap data ini akan digabungkan dengan ekstensi ```.jpg``` dan dijadikan sebagai path baru untuk file sebelumnya yang akan dipindah.
+```bash
+// Melakukan rename nama File dengan nama hewannya
+strcat(Nama_Hewan, ".jpg");
+strcpy(variable_path3, variable_path);
+strcat(variable_path3, "/");
+
+strcat(variable_path3, result_2);
+strcat(variable_path, "/");
+                        
+strcat(variable_path, Nama_Hewan);
+
+char *rename_image_file[] = {"rename_image_file", variable_path3, variable_path, NULL};
+call_function("/bin/mv", rename_image_file);
+```
+Karena kami menggunakan fungsi ```cp``` atau copy, maka tentu akan ada file duplikat yang tertinggal di folder petshop utama. Untuk menghilangkan file duplikat tersebut maka kami menggunakan fungsi dibawah ini :
+```bash
+// Fungsi ini untuk menghapus file JPG yng masih ada di folder petshop
+// Setelah masing-masing jpg dipindahkan ke folder baru berdasarkan jenis hewannya
+void RemoveFiles()
+{
+    int status;
+    
+    pid_t child_id;
+
+    child_id = fork();
+    
+    if(child_id < 0)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    if(child_id == 0)
+    {
+        DIR *directory;
+        char destination[100] = "/home/arvel/Documents/Praktikum2/Soal2/petshop";
+        directory = opendir(destination);
+        if(directory != NULL)
+        {
+            // Melihat isi di dalam folder
+            struct dirent *dalam_folder;
+
+            // Membaca directory selama return tidak NULL
+            while((dalam_folder = readdir(directory))!=NULL)
+            {
+                // DT_REG berfungsi untuk mengecek file berdasarkan direktori / foldernya
+                if(dalam_folder -> d_type == DT_REG)
+                {
+                    // Inisiasi source / lokasi yang akan dilakukan operasi remove
+                    char source[100] = "/home/arvel/Documents/Praktikum2/Soal2/petshop/";
+
+                    // Menggabungkan nama file di dalam folder dengan source
+                    strcat(source, dalam_folder -> d_name);
+
+                    char *remove_images[] = {"remove","-rf", source, NULL};
+                    call_function("/bin/rm",remove_images);
+                }
+            }
+        }
+    }
+
+    else 
+    {
+        ((wait(&status)) > 0);
+    }
+}
+```
+
+### Output
 
 ## 2E
 Di setiap folder buatlah sebuah file ```keterangan.txt``` yang berisi <b>nama</b> dan <b>umur semua peliharaan</b> dalam folder tersebut. Format harus sesuai contoh.
@@ -290,8 +401,34 @@ nama : miko
 umur  : 2 tahun
 ```
 ### Pengerjaan
+```bash
+// 2E 
+// Membuat file keterangan.txt
+// Membuat file keterangan.txt di lokasi variable_path yang sudah dicopy ke txt_path
+strcat(txt_path, "/keterangan.txt"); 
+
+// mengcopy "nama : " ke variable data_txt
+strcpy(data_txt, "nama : ");
+
+// menggabungkan data nama hewan dengan "nama : "
+strcat(data_txt, Nama_Hewan_in_txt);
+
+// menggabungkan ] "umur : " dengan ariable data_txt
+strcat(data_txt, "\numur : ");
+
+// menggabungkan data umur hewan dengan "umur : "
+strcat(data_txt, Umur_Hewan);
+
+// menambahkan kata tahun di belakang data umur
+strcat(data_txt, "tahun\n\n");
+
+FILE *make_txt = fopen(txt_path, "a");
+fputs(data_txt, make_txt);
+fclose(make_txt);
+```
 
 ### Penjelasan
+Pertama kami membuat sebuah path baru dengan nama ```/keterangan.txt```, kemudian digabungkan ke dalam variable ```txt_path``` yang berisi data path folder petshop. Kemudian kami menggunakan kombinasi antara ```strcpy``` dan ```strcat``` untuk memasukkan data ke dalam ```keterangan.txt``` agar sesuai dengan format soal. Dengan menggunakan variable pointer ```*make_txt``` untuk membuka dan melakukan ```append``` isi data dari variable ```data_txt``` ke dalam ```txt_path```. Jika semua data sudah di ```append```, maka file akan ditutup kembali.
 
 # --- No 3 ---
 Ranora adalah mahasiswa Teknik Informatika yang saat ini sedang menjalani magang di perusahan ternama yang bernama “FakeKos Corp.”, perusahaan yang bergerak dibidang keamanan data. Karena Ranora masih magang, maka beban tugasnya tidak sebesar beban tugas pekerja tetap perusahaan. Di hari pertama Ranora bekerja, pembimbing magang Ranora memberi tugas pertamanya untuk membuat sebuah program.
