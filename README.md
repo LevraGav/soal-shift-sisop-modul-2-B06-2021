@@ -19,46 +19,186 @@ Pada suatu masa, hiduplah seorang Steven yang hidupnya pas-pasan. Steven punya p
 
 Di lain hal Steven anak yang tidak amat sangat super membenci matkul sisop, beberapa jam setelah diputus oleh pacarnya dia menemukan wanita lain bernama Stevany, namun Stevany berkebalikan dengan Steven karena menyukai sisop. Steven ingin terlihat jago matkul sisop demi menarik perhatian Stevany.
 
-Pada hari ulang tahun Stevany, Steven ingin memberikan Stevany zip berisikan hal-hal yang disukai Stevany. Steven ingin isi zipnya menjadi rapi dengan membuat folder masing-masing sesuai extensi. (a) Dikarenakan Stevany sangat menyukai huruf Y, Steven ingin nama folder-foldernya adalah Musyik untuk mp3, Fylm untuk mp4, dan Pyoto untuk jpg (b) untuk musik Steven mendownloadnya dari link di bawah, film dari link di bawah lagi, dan foto dari link dibawah juga :). (c) Steven tidak ingin isi folder yang dibuatnya berisikan zip, sehingga perlu meng-extract-nya setelah didownload serta (d) memindahkannya ke dalam folder yang telah dibuat (hanya file yang dimasukkan).
+### Pendahuluan
+Kami membuat sebuah fungsi untuk mengeksekusi command agar tidak perlu menulis fungsi berkali-kali.
 
-(e) Untuk memudahkan Steven, ia ingin semua hal di atas berjalan otomatis 6 jam sebelum waktu ulang tahun Stevany). (f) Setelah itu pada waktu ulang tahunnya Stevany, semua folder akan di zip dengan nama Lopyu_Stevany.zip dan semua folder akan di delete(sehingga hanya menyisakan .zip).
-Kemudian Steven meminta bantuanmu yang memang sudah jago sisop untuk membantunya mendapatkan hati Stevany. Bantu Woy!!
+```c
+void execute(char **args){
+    int pid = fork();
+    int status;
+    if(pid == 0){
+        execvp(args[0], args);
+    }
 
-### Note
-- Ulang Tahun Stevany : 09 April Pukul 22.22 WIB
-- Semua poin dijalankan oleh 1 script di latar belakang, termasuk mendownload file zip-nya. Jadi cukup jalankan script 1x serta ubah time dan date untuk check hasilnya.
+    while(wait(&status) > 0);
+}
 ```
-Preview :
-https://drive.google.com/drive/folders/1NzRiPPoVlR_H8P51cxN4jaceeFQGk4un
-*tontonnya 720p biar jelas.. ಠ‿ಠ
-```
-- <b>Tidak boleh</b> menggunakan fungsi system(), mkdir(), dan rename() (Yang di bahasa C) .... FORBIDDENNN!!
-- <b>Tidak boleh</b> pake <b>cron</b> !!!
-- Menggunakan fork dan exec.
-- Link
-```
-Foto :
-https://drive.google.com/file/d/1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD/view
-Musik :
-https://drive.google.com/file/d/1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J/view
-Film : 
-https://drive.google.com/file/d/1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp/view
-```
-### Tips
-- Gunakan fungsi wait() dan sleep() untuk memperlancarrr..
-- untuk mendownload zip yang dibutuhkan bisa menggunakan command :
-```
-wget --no-check-certificate "https://drive.google.com/uc?id=ID-FILE&export=download" -O Nama_untuk_filenya.ext
-```
-- contoh
-```
-Wget --no-check-certificate "https://drive.google.com/uc?id=1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J&export=download" -O Musik_for_Stevany.zip
-```
-## Pengerjaan
 
-## Penjelasan
+## 1A
+Dikarenakan Stevany sangat menyukai huruf Y, Steven ingin nama folder-foldernya adalah Musyik untuk mp3, Fylm untuk mp4, dan Pyoto untuk jpg
 
-## Permasalahan
+### Pengerjaan
+```c
+char *foldery[3] = {"Musyik/", "Pyoto/", "Fylm/"};
+for(int i=0; i<3; i++){
+    char *args[] = {"mkdir", foldery[i], NULL};
+    execute(args);
+}
+```
+### Penjelasan
+Deklarasikan nama-nama folder yang akan dibuat ke sebuah array. Lalu buat sebuah loop. Dalam loop tersebut ada variabel yang berisi argumen-argumen yang akan diberikan ke fungsi execute. Argumen tersebut adalah "mkdir" untuk membuat folder, nama folder yang akan dibuat, dan NULL.
+
+## 1B
+untuk musik Steven mendownloadnya dari link di bawah, film dari link di bawah lagi, dan foto dari link dibawah juga :)
+
+### Pengerjaan
+```c
+char *link[3] = {"https://drive.google.com/uc?id=1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD&export=download", "https://drive.google.com/uc?id=1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J&export=download", "https://drive.google.com/uc?id=1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp&export=download"};
+    char *nama_terunduh[3] = {"Musik_for_Stevany.zip","Film_for_Stevany.zip","Foto_for_Stevany.zip"};
+for(int i=0; i<3; i++){
+    if(fork() == 0){
+        char *argv[] = {"wget", "-q","--no-check-certificate", link[i], "-O", nama_terunduh[i], NULL};
+        execv("/usr/bin/wget", argv);
+    }
+}
+```
+
+### Penjelasan
+Deklarasikan link file-file yang akan diunduh dan nama file yang diinginkan ke dua buah array. Lalu buat sebuah loop. Dalam loop tersebut ada variabel yang berisi argumen-argumen yang akan diberikan ke fungsi execv. Argumen tersebut adalah "wget" untuk mengunduh file, parameter-parameter sesuai dengan soal agar bisa mengunduh dari GDrive, link file, nama yang diinginkan, dan NULL.
+
+## 1C
+Steven tidak ingin isi folder yang dibuatnya berisikan zip, sehingga perlu meng-extract-nya setelah didownload serta 
+
+### Pengerjaan
+```c
+for(int i=0; i<3; i++){
+    int status;
+    pid_t pid = wait(&status);
+    waitpid(pid, &status, WUNTRACED);
+}
+
+for(int i=0; i<3; i++){
+    if(fork() == 0){
+        char *argv[] = {"unzip", "-q", nama_terunduh[i], "-d", "", NULL};
+        execv("/usr/bin/unzip", argv);
+    }
+}
+```
+
+### Penjelasan
+Buat sebuah for loop yang akan menunggu setiap fork dari fungsi nomor sebelumnya selesai. Lalu jika sudah selesai, buat sebuah loop yang akan mengunzip tiga file yang sudah terunduh dengan cara yang sama seperti nomor sebelumnya.
+
+## 1D
+memindahkannya ke dalam folder yang telah dibuat (hanya file yang dimasukkan).
+
+### Pengerjaan
+```c
+char working_dir[] = "/home/nor/sisop/shift2/";
+
+for(int i=0; i<3; i++){
+    int status;
+    pid_t pid = wait(&status);
+    waitpid(pid, &status, WUNTRACED);
+}
+
+for(int i=0; i<3; i++){
+    DIR *dp;
+    struct dirent *ep;
+    char curr_dir[100]; sprintf(curr_dir, "%s%s", working_dir, folderbold[i]);
+    char move_dir[100]; sprintf(move_dir, "%s%s", working_dir, foldery[i]);
+    dp = opendir(curr_dir);
+
+    if(dp != NULL){
+        while((ep = readdir(dp))){
+            if(strcmp(ep->d_name, ".") != 0 || strcmp(ep->d_name, "..") != 0){
+                char file_to_move[355]; sprintf(file_to_move, "%s%s", curr_dir, ep->d_name);
+                char file_move_to[355]; sprintf(file_move_to, "%s%s", move_dir, ep->d_name);
+                char *args[] = {"mv", file_to_move, file_move_to, NULL};
+                execute(args);
+            }
+        }
+    }
+}
+```
+
+### Penjelasan
+Buat variabel working_dir tempat script berada. Buat sebuah for loop yang akan menunggu setiap fork dari fungsi nomor sebelumnya selesai. Lalu jika sudah selesai, buat for loop untuk setiap nama folder. Di dalamnya ada while loop yang mengecek isi folder, selama belum kosong, dia akan mengambil nama file yang akan dipindahkan, dan direktori di mana file tersebut ingin dipindahkan, lalu dimasukkan ke argumen bersama dengan command "mv". Argumen tersebut lalu diberikan ke fungsi execute.
+
+## 1E
+Untuk memudahkan Steven, ia ingin semua hal di atas berjalan otomatis 6 jam sebelum waktu ulang tahun Stevany)
+
+### Pengerjaan
+```c
+time_t my_time;
+struct tm * timeinfo; 
+
+int cektanggal(int persiapan){
+    int hour = 22;
+    if(persiapan == 1) hour = 22-6;
+
+    time (&my_time);
+    timeinfo = localtime (&my_time);
+    if(timeinfo->tm_mday == 9 && timeinfo->tm_mon+1 == 4 && timeinfo->tm_hour == hour && timeinfo->tm_min == 22){
+        return 1;
+    }
+    return 0;
+}
+
+int terunduh=0, terzip=0;
+
+while(1){
+	if(cektanggal(1) && terunduh==0){
+		//soal a-e
+		terunduh=1;
+	}
+	
+	sleep(1);
+}
+```
+
+### Penjelasan
+Dibuat fungsi cek tanggal untuk mengecek tanggal dan jam. Fungsi tersebut menerima input persiapan, jika persiapan = 1, maka jam yang akan dicek adalam jam 16. Lalu waktu komputer dimasukkan ke variabel timeinfo. Lalu tanggal, bulan (+1 karena bulan mulai dari 0), jam, menit diekstrak dari timeinfo lalu dicek dengan tanggal ultah Stevany, jika sama, maka fungsi akan me-return nilai 1. Jika tidak maka akan mereturn 0.
+
+Dibuat variabel terunduh dan terzip, lalu dibuat while true loop yang didalamnya ada if yang akan mengecek jika tanggal sudah benar dan file belum terunduh. Jika kondisi memenuhi, soal a-e akan dijalankan, lalu variable terunduh di-set jadi 1 agar file tidak terunduh lagi. Lalu juga ada fungsi sleep yang membuat pengecekan dilakukan tiap detik.
+
+### Output (kondisi awal/ kondisi akhir)
+![ss479 2021 04 23 6685](https://user-images.githubusercontent.com/11045113/115997974-4eb2e800-a60f-11eb-95f3-f69e57902587.png)
+![ss479 2021 04 23 6686](https://user-images.githubusercontent.com/11045113/115997959-465aad00-a60f-11eb-9dc3-15724a59f41b.png)
+
+## 1F
+Setelah itu pada waktu ulang tahunnya Stevany, semua folder akan di zip dengan nama Lopyu_Stevany.zip dan semua folder akan di delete(sehingga hanya menyisakan .zip).
+
+### Pengerjaan
+```c
+if(cektanggal(0) && terzip==0){
+	if(1){
+        char *args[] = { "zip", "-r", "Lopyu_Stevany", foldery[0], foldery[1], foldery[2], NULL };
+        execute(args);
+    }
+
+    if(1){
+        char *args[] = {"rm", "-rf", foldery[0], foldery[1], foldery[2], folderbold[0], folderbold[1], folderbold[2], NULL};
+        execute(args);
+    }
+
+    terzip=1;
+}
+
+if(terunduh && terzip){
+	exit(EXIT_FAILURE);
+}
+```
+
+### Penjelasan
+Dalam while true loop yang sama, ada fungsi yang menjalankan nomor f. Jika kondisi sudah memenuhi, akan dijalankan perintah untuk men-zip tiga foldery ke dalam zip Lopyu_Stevany, lalu meremove tiga foldery dan tiga folderbold, lalu mengubah variabel terzip jadi 1.
+
+Lalu ada if lagi yang mengecek apakah terunduh dan terzip sudah 1, jika ya, maka while true loop akan keluar dan process akan mati.
+
+### Output
+![ss479 2021 04 23 6687](https://user-images.githubusercontent.com/11045113/115997939-30e58300-a60f-11eb-9de4-4ff3f4ad6b9b.png)
+
+## Kendala
+- wget awalnya tidak bisa jalan karena dikira pathnya ada di /bin/wget/ padahal sebenarnya di /usr/bin/wget/
 
 # --- No 2 ---
 Loba bekerja di sebuah petshop terkenal, suatu saat dia mendapatkan zip yang berisi banyak sekali foto peliharaan dan Ia diperintahkan untuk mengkategorikan foto-foto peliharaan tersebut. Loba merasa kesusahan melakukan pekerjaanya secara manual, apalagi ada kemungkinan ia akan diperintahkan untuk melakukan hal yang sama. Kamu adalah teman baik Loba dan Ia meminta bantuanmu untuk membantu pekerjaannya.
