@@ -157,6 +157,106 @@ Fungsi diatas berfungsi untuk membuat sebuah folder di lokasi / direktori baru, 
 ```
 Hampir sama dengan fungsi sebelumnya. Fungsi diatas bertujuan untuk melakukan ekstrak terhadap sebuah file bertipe zip di sebuah direktori untuk kemudian hasil ekstraknya akan disimpan di direktori tertentu. Dengan menggunakan variable pointer untuk menyimpan data - data di dalam sebuah array, yaitu berupa ```unzip``` (penamaan perintah), penggunaan ```-q``` (agar saat program dieksekusi tidak memenuhi terminal), ```source``` (sumber atau lokasi tempat file zip yang akan diekstrak), penggunaan ```-d``` (untuk merujuk ke direktori tertentu), ```destination``` (deklarasi direktori / lokasi tempat hasil ekstrak akan disimpan), dan penggunaan ```.jpg``` (agar file yang diekstrak hanya file yang bertipe JPG). Kemudian semua data di dalam array tadi akan dieksekusi dengan menggunakan fungsi ```call_function``` yang sudah di deklarasikan di awal kodingan.
 
+### Output
+
+### Pendahuluan 2B, 2C, dan 2D
+Fungsi di bawah ini berfungsi untuk melakukan pemotongan (menghilangkan) ekstensi .jpg dari setiap nama file yang ada di dalam folder
+```bash
+// Untuk melakukan slice pada ekstensi .jpg
+char* cut_string_JPG (char*s)
+{
+    int x;
+    int y;
+
+    char* new;
+
+    for (y = 0; s[y] != '\0'; y++);
+
+    // panjang dari string
+    x = y - 4 + 1;
+
+    if (x < 1)
+        return NULL;
+
+    new = (char*) malloc (x * sizeof(char));
+
+    for (y = 0; y < x - 1; y++)
+        new[y] = s[y];
+
+    new[y] = '\0';
+    return new;
+}
+```
+Melakukan pemisahan nama file hewan berdasarkan ```_``` (jika 1 nama file mengandung 2 hewan) dan ```;``` (berdasarkan atribut hewan mulai dari jenis, nama, dan umurnya). Dengan menggunakan ```strtok_r``` maka looping pertama berfungsi untuk melakukan pemisahan string nama file berdasarkan ```_```, kemudian pada looping kedua untuk setiap iterasi pembacaan string nama file berdasarkan ```;``` maka akan dilakukan penyimpanan data atribut hewan ke dalam array tertentu.
+```bash
+ DIR *directory;
+        directory=opendir(destination);
+        if(directory!=NULL)
+        {
+            // Melihat isi di dalam folder
+            struct dirent *dalam_folder;
+
+            // Membaca directory selama return tidak NULL
+            while((dalam_folder = readdir(directory)) != NULL)
+            {
+                // DT_REG berfungsi untuk mengecek file berdasarkan direktori / foldernya
+                if(dalam_folder -> d_type == DT_REG)
+                {
+                    // Inisiasi Variable
+                    int x; 
+                    char *Token1, *Token2; 
+                    char *Token3, *Token4;
+                    char *Nama_File = dalam_folder -> d_name;
+                    char *Nama_File_New = cut_string_JPG(Nama_File);
+
+                    char result_1[100];
+                    char result_2[100]; 
+                    char result_3[100];
+                    char variable_path2[100];
+                    char variable_path3[100];
+                    char Tipe_Hewan[50];
+                    char Nama_Hewan[50];
+                    char Umur_Hewan[50];
+
+                    // Melakukan pengecekan
+                    // Nama File berdasarkan tanda "_" dan ";"
+                    for(Token1 = strtok_r(Nama_File_New, "_", &Token3); Token1!=NULL; Token1=strtok_r(NULL, "_", &Token3))
+                    {
+                        x = 0;
+                        char variable_path[99]="/home/arvel/Documents/Praktikum2/Soal2/petshop/";
+                        char txt_location[100]; 
+                        char txt_path[100];
+                        char Nama_Hewan_in_txt[100];
+                        char data_txt[100];
+
+                        strcpy(result_1, Nama_File);
+                        strcpy(variable_path2, variable_path);
+                        strcpy(variable_path3, variable_path);
+                        strcpy(result_2, Nama_File);
+                        strcpy(result_3, Nama_File);
+                        for(Token2 = strtok_r(Token1, ";", &Token4); Token2 != NULL; Token2 = strtok_r(NULL, ";", &Token4))
+                        {
+                            if(x==0)strcpy(Tipe_Hewan, Token2);
+                            if(x==1)strcpy(Nama_Hewan, Token2);
+                            if(x==2)strcpy(Umur_Hewan, Token2);
+                            x++;
+                        }  
+```
+String nama file terdiri dari 3 komponen, yaitu jenis, nama, dan umur hewan.
+- Untuk ```x==0``` maka data jenis hewan akan disimpan di dalam array Tipe_Hewan
+- Untuk ```x==1``` maka data nama hewan akan disimpan di dalam array Nama_Hewan
+- Untuk ```x==2``` maka data umur hewan akan disimpan di dalam array Umur_Hewan
+
+```bash
+for(Token2 = strtok_r(Token1, ";", &Token4); Token2 != NULL; Token2 = strtok_r(NULL, ";", &Token4))
+                        {
+                            if(x==0)strcpy(Tipe_Hewan, Token2);
+                            if(x==1)strcpy(Nama_Hewan, Token2);
+                            if(x==2)strcpy(Umur_Hewan, Token2);
+                            x++;
+                        }  
+```
+
 ## 2B
 Foto peliharaan perlu dikategorikan sesuai jenis peliharaan, maka kamu harus membuat folder untuk setiap jenis peliharaan yang ada dalam zip. Karena kamu tidak mungkin memeriksa satu-persatu, maka program harus membuatkan folder-folder yang dibutuhkan sesuai dengan isi zip.
 Contoh: Jenis peliharaan kucing akan disimpan dalam ```/petshop/cat```, jenis peliharaan kura-kura akan disimpan dalam ```/petshop/turtle```.
