@@ -440,6 +440,9 @@ Pertama kami membuat sebuah path baru dengan nama ```/keterangan.txt```, kemudia
 ### Output
 ![Output Soal No 2E](https://user-images.githubusercontent.com/72689610/115994393-f96fda00-a600-11eb-9bb7-6838a7652258.png)
 
+## Kendala
+Tidak ada kendala dalam pengerjaan soal ini
+
 # --- No 3 ---
 Ranora adalah mahasiswa Teknik Informatika yang saat ini sedang menjalani magang di perusahan ternama yang bernama “FakeKos Corp.”, perusahaan yang bergerak dibidang keamanan data. Karena Ranora masih magang, maka beban tugasnya tidak sebesar beban tugas pekerja tetap perusahaan. Di hari pertama Ranora bekerja, pembimbing magang Ranora memberi tugas pertamanya untuk membuat sebuah program.
 
