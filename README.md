@@ -427,6 +427,9 @@ call_function("/bin/mkdir", Make_Folder);
 ```
 Dengan sebuah variable pointer untuk menampung data - data di dalam sebuah array, yaitu berupa ```mkdir``` (penamaan perintah), penggunaan ```-p``` (parent) untuk membuat parent directory jika dibutuhkan, dan ```variable_path``` (deklarasi path folder petshop). Kemudian semua data di dalam array tadi akan dieksekusi dengan menggunakan fungsi ```call_function``` yang sudah di deklarasikan di awal kodingan.
 
+### Output
+![Output Soal 2C](https://user-images.githubusercontent.com/72689610/115994329-c62d4b00-a600-11eb-89b0-9baa4d75c321.png)
+
 ## 2C dan 2D
 Setelah folder kategori berhasil dibuat, programmu akan memindahkan foto ke folder dengan kategori yang sesuai dan di rename dengan nama peliharaan.
 Contoh: ```/petshop/cat/joni.jpg```. 
@@ -533,7 +536,6 @@ void RemoveFiles()
 ```
 
 ### Output
-![Output Soal 2C](https://user-images.githubusercontent.com/72689610/115994329-c62d4b00-a600-11eb-89b0-9baa4d75c321.png)
 ![Output Soal 2D](https://user-images.githubusercontent.com/72689610/115994334-c9283b80-a600-11eb-981c-70b7bc4190e6.png)
 
 ## 2E
